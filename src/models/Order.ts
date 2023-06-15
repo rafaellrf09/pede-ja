@@ -3,7 +3,7 @@ import { Item } from './Item';
 import { ClientData } from './ClientData';
 import { PaymentMethod } from './PaymentMethod';
 
-enum Status {
+export enum Status {
     recieved = "RECIEVED",
     created = "CREATED",
     inProduction = "IN_PRODUCTION",
@@ -34,6 +34,6 @@ const schema = new Schema<Order>({
     },
     status: { type: String, required: true },
     total: { type: Number, required: true }
-})
+});
 
-export const CandleModel = model<Order>('Order', schema);
+export const OrderModel = model<Order>('Order', schema);
