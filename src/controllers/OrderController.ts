@@ -1,9 +1,6 @@
 import { Request, Response } from "express";
-import { ClientData } from "src/models/ClientData";
-import { Item } from "src/models/Item";
-import { Order, Status } from "src/models/Order";
-import { PaymentMethod } from "src/models/PaymentMethod";
-import OrderService from "src/services/OrderService";
+import { Order, Status } from "../models/Order";
+import OrderService from "../services/OrderService";
 
 export default class OrderController {
 
@@ -14,19 +11,19 @@ export default class OrderController {
     }
 
     create = async (req: Request, res: Response) => {
-        const { items, clientData, paymentMethod, status, total } = req.body;
+        const { items, clientData, paymentMethod } = req.body;
 
-        if (!items || !clientData || !paymentMethod || !status || !total)
+        if (!items || !clientData || !paymentMethod)
             return res.status(400).json({
                 errorCode: 400,
-                error: `Cannot create order with no parameters: ${!items || !clientData || !paymentMethod || !status || !total}`
+                error: `Cannot create order with no parameters: ${!items || !clientData || !paymentMethod}`
             });
 
-        const newOrder: Order = {
+        const newOrder = await this._orderService.save({
             ...req.body,
             status: Status.recieved,
-        }
+        });
 
-        await this._orderService.save(newOrder);
+        return res.status(201).json(newOrder);
     }
 }

@@ -2,6 +2,7 @@ import { model, Document, Schema } from 'mongoose';
 
 export interface Item extends Document {
     name: string
+    quantity: number,
     description: string
     value: number
     isActive: boolean
