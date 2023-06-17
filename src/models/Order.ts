@@ -32,8 +32,11 @@ const schema = new Schema<Order>({
         type: Schema.Types.Mixed,
         required: true,
     },
+
     status: { type: String, required: true },
     total: { type: Number, required: true }
+}, {
+    timestamps: true
 });
 
 export const OrderModel = model<Order>('Order', schema);
