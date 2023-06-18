@@ -1,10 +1,7 @@
 import { Request, Response } from "express";
 import { Status } from "../models/Order";
 import OrderService from "../services/OrderService";
-import RabbitMQClient from "../messages/RabbitMQClient";
-import { config } from 'dotenv';
-
-config();
+import { rabbitMQClient, whatsappMessager } from "../messages";
 export default class OrderController {
 
     private _orderService: OrderService;
@@ -19,9 +16,9 @@ export default class OrderController {
             status: Status.recieved,
         });
 
-        const orderMessageQueue = new RabbitMQClient(process.env.QUEUE_ORDERS_RECIEVED);
-        await orderMessageQueue.connect();
-        await orderMessageQueue.sendMessage(JSON.stringify(newOrder));
+        await rabbitMQClient.sendMessage(JSON.stringify(newOrder));
+
+        await whatsappMessager.sendMessage(newOrder.clientData.phone, JSON.stringify(newOrder));
 
         return res.status(201).json(newOrder);
     }
@@ -33,6 +30,7 @@ export default class OrderController {
             if (!status) return res.status(400).json({ error: `Missing params "status"` });
 
             const order = await this._orderService.changeStatus(id, status);
+            await whatsappMessager.sendMessage(order.clientData.phone, `Status Updated: ${order.status}`);
             return res.json(order);
         } catch (error) {
             return res.status(400).json(error);
