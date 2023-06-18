@@ -18,11 +18,33 @@ export default class OrderController {
             ...req.body,
             status: Status.recieved,
         });
-        
+
         const orderMessageQueue = new RabbitMQClient(process.env.QUEUE_ORDERS_RECIEVED);
         await orderMessageQueue.connect();
         await orderMessageQueue.sendMessage(JSON.stringify(newOrder));
 
         return res.status(201).json(newOrder);
+    }
+
+    changeStatus = async (req: Request, res: Response) => {
+        try {
+            const { id, status } = req.params;
+            if (!id) return res.status(400).json({ error: `Missing params "id"` });
+            if (!status) return res.status(400).json({ error: `Missing params "status"` });
+
+            const order = await this._orderService.changeStatus(id, status);
+            return res.json(order);
+        } catch (error) {
+            return res.status(400).json(error);
+        }
+    }
+
+    getById = async (req: Request, res: Response) => {
+        try {
+            const order = await this._orderService.getById(req.params.id);
+            return res.json(order);
+        } catch (error) {
+            return res.status(400).json(error);
+        }
     }
 }
