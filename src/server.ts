@@ -2,7 +2,7 @@ import { config } from "dotenv";
 import { app } from "./app";
 import { connectToMongoDB } from "./config/mongodb";
 import { connection } from "mongoose";
-import OrderMessageChannel from "./messages/OrderMessageChannel";
+import { initMessangers, rabbitMQClient } from "./messages";
 
 const createServer = async () => {
     config();
@@ -13,11 +13,11 @@ const createServer = async () => {
         console.log(`App running on port ${PORT}`);
     });
 
-    const orderMsgChannel = new OrderMessageChannel(server);
-    await orderMsgChannel.consumeMessages();
+    initMessangers(server);
 
     process.on('SIGINT', async () => {
         await connection.close();
+        await rabbitMQClient.close();
         server.close();
         console.log("App server and MongoDb are closed")
     })
