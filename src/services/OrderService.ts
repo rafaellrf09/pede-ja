@@ -2,13 +2,20 @@ import mongoose from "mongoose";
 import { Item } from "../models/Item";
 import { Order, OrderModel, Status } from "../models/Order";
 
+export interface InterfaceOrderService{
+    save(order: Order): Promise<Order>,
+    changeStatus(id: string, newStatus: string): Promise<Order>,
+    getById(id: string): Promise<Order>,
+}
+
 export default class OrderService {
     private _calculateTotal(items: Item[]): number {
         return items.reduce(function (a, b) { return a + (b.quantity * b.value); }, 0);
     }
 
     private _validateChangeStatus(status: string, order: Order): boolean {
-        if (order.status === "RECIEVED" && status === "recieved") return false;
+        if (order.status === "DELIVERED" && status === "canceled") return false;
+        else if (order.status === "RECIEVED" && status === "recieved") return false;
         else if (order.status === "CREATED" && (status === "recieved" || status === "created")) return false;
         else if (order.status === "IN_PRODUCTION" && (status === "recieved" || status === "created" || status === "inProduction")) return false;
         else if (order.status === "IN_DELIVERY" && (status === "recieved" || status === "created" || status === "inProduction" || status === "inDelivery")) return false;
@@ -33,7 +40,7 @@ export default class OrderService {
         return order;
     }
 
-    async getById(id: string) : Promise<Order>{
+    async getById(id: string): Promise<Order> {
         const objId = new mongoose.Types.ObjectId(id);
         const order: Order = await OrderModel.findById(objId);
         return order;

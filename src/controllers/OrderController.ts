@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 import { Status } from "../models/Order";
-import OrderService from "../services/OrderService";
+import { InterfaceOrderService } from "../services/OrderService";
 import { rabbitMQClient, whatsappMessager } from "../messages";
 export default class OrderController {
 
-    private _orderService: OrderService;
+    private _orderService: InterfaceOrderService;
 
-    constructor() {
-        this._orderService = new OrderService();
+    constructor(orderService: InterfaceOrderService) {
+        this._orderService = orderService;
     }
 
     create = async (req: Request, res: Response) => {
@@ -18,7 +18,7 @@ export default class OrderController {
 
         await rabbitMQClient.sendMessage(JSON.stringify(newOrder));
 
-        await whatsappMessager.sendMessage(newOrder.clientData.phone, JSON.stringify(newOrder));
+        await whatsappMessager.sendOrderMessage(newOrder.clientData.phone, newOrder);
 
         return res.status(201).json(newOrder);
     }
