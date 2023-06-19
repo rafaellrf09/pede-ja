@@ -13,6 +13,8 @@ const schema = new Schema<Item>({
     description: { type: String, required: true },
     value: { type: Number, required: true },
     isActive: { type: Boolean, required: true },
+}, {
+    timestamps: true
 })
 
 export const ItemModel = model<Item>('Item', schema);
