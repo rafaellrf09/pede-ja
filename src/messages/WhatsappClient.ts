@@ -1,13 +1,25 @@
 import { Client, LocalAuth } from "whatsapp-web.js"
 import * as qrcode from 'qrcode-terminal';
+import { Order } from "../models/Order"
 
 export default class WhatsAppClient {
     private client: Client;
-
     constructor() {
         this.client = new Client({
             authStrategy: new LocalAuth(),
         });
+    }
+
+    private _formatOrderMessage(order: Order): string {
+        const message = ` 
+            *${order.clientData.firstName} ${order.clientData.lastName}*: Seu pedido foi recebido!
+            *Itens*: ${order.items.map(item => `${item.name} - Quantidade: ${item.quantity}`)}
+            *Endereço de Entrega*: ${order.clientData.address} - ${order.clientData.number} - ${order.clientData.complement}
+            *Forma de Pagamento*: ${order.paymentMethod.paymentType}
+            *Precisa de Troco?* ${order.paymentMethod.needChange ? `Sim - R$${order.paymentMethod.changeValue.toFixed(2)}` : "Não"}
+            *Valor Total*: R$${order.total.toFixed(2)}
+        `
+        return message;
     }
 
     public async connect() {
@@ -31,6 +43,11 @@ export default class WhatsAppClient {
         this.client.initialize();
     }
 
+    public async sendOrderMessage(number: string, order: Order): Promise<void> {
+        const messageFormated = this._formatOrderMessage(order);
+        await this.sendMessage(number, messageFormated);
+    }
+
     public async sendMessage(number: string, message: string): Promise<void> {
         try {
             const chatId = `55${number}@c.us`;
@@ -40,6 +57,4 @@ export default class WhatsAppClient {
             console.error('Erro ao enviar mensagem:', error);
         }
     }
-
-
 }
