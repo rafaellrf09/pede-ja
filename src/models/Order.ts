@@ -9,6 +9,7 @@ export enum Status {
     inProduction = "IN_PRODUCTION",
     inDelivery = "IN_DELIVERY",
     delivered = "DELIVERED",
+    canceled = 'CANCELED'
 }
 
 export interface Order extends Document {
