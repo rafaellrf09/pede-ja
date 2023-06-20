@@ -10,11 +10,19 @@ export default class OrderController {
         this._orderService = orderService;
     }
 
+    getAll = async (req: Request, res: Response) => {
+        try {
+            const orders = await this._orderService.getAll();
+            return res.json(orders);
+        } catch (error) {
+            return res.status(400).json(error);
+        }
+    }
+
     create = async (req: Request, res: Response) => {
-        const newOrder = await this._orderService.save({
-            ...req.body,
-            status: Status.recieved,
-        });
+        const { items, clientData, paymentMethod } = req.body;
+
+        const newOrder = await this._orderService.create(items, clientData, paymentMethod);
 
         await rabbitMQClient.sendMessage(JSON.stringify(newOrder));
 
