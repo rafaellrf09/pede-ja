@@ -11,14 +11,13 @@ export default class WhatsAppClient {
     }
 
     private _formatOrderMessage(order: Order): string {
-        const message = ` 
-            *${order.clientData.firstName} ${order.clientData.lastName}*: Seu pedido foi recebido!
-            *Itens*: ${order.items.map(item => `${item.name} - Quantidade: ${item.quantity}`)}
-            *Endereço de Entrega*: ${order.clientData.address} - ${order.clientData.number} - ${order.clientData.complement}
-            *Forma de Pagamento*: ${order.paymentMethod.paymentType}
-            *Precisa de Troco?* ${order.paymentMethod.needChange ? `Sim - R$${order.paymentMethod.changeValue.toFixed(2)}` : "Não"}
-            *Valor Total*: R$${order.total.toFixed(2)}
-        `
+        const message =
+            `*${order.clientData.firstName} ${order.clientData.lastName}*: Seu pedido foi recebido!
+*Itens*: ${order.items.map(item => `${item.name} - Quantidade: ${item.quantity}`)}
+*Endereço de Entrega*: ${order.clientData.address} - ${order.clientData.number} - ${order.clientData.complement}
+*Forma de Pagamento*: ${order.paymentMethod.paymentType}
+*Precisa de Troco?* ${order.paymentMethod.needChange ? `Sim - R$${order.paymentMethod.changeValue.toFixed(2)}` : "Não"}
+*Valor Total*: R$${order.total.toFixed(2)}`
         return message;
     }
 
