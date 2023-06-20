@@ -1,15 +1,15 @@
-import { model, Document, Schema } from 'mongoose';
+import { model, Document, Schema, Model } from 'mongoose';
 import { Item } from './Item';
 import { ClientData } from './ClientData';
 import { PaymentMethod } from './PaymentMethod';
 
 export enum Status {
-    recieved = "RECIEVED",
-    created = "CREATED",
-    inProduction = "IN_PRODUCTION",
-    inDelivery = "IN_DELIVERY",
-    delivered = "DELIVERED",
-    canceled = 'CANCELED'
+    RECIEVED = "RECIEVED",
+    CREATED = "CREATED",
+    IN_PRODUCTION = "IN_PRODUCTION",
+    START_TO_DELIVERY = "START_TO_DELIVERY",
+    DELIVERED = "DELIVERED",
+    CANCELED = 'CANCELED'
 }
 
 export interface Order extends Document {
@@ -17,10 +17,10 @@ export interface Order extends Document {
     clientData: ClientData;
     paymentMethod: PaymentMethod,
     status: Status,
-    total: number
+    total: number,
 }
 
-const schema = new Schema<Order>({
+const schema: Schema<Order> = new Schema({
     items: {
         type: [Schema.Types.Mixed],
         required: true,
@@ -40,4 +40,4 @@ const schema = new Schema<Order>({
     timestamps: true
 });
 
-export const OrderModel = model<Order>('Order', schema);
+export const OrderModel: Model<Order> = model<Order>('Order', schema);
