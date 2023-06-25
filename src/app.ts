@@ -1,6 +1,7 @@
 import * as express from "express";
 import { orderRouter } from "./routes/order";
 import { itemRouter } from "./routes/item";
+import * as cors from 'cors';
 
 export const app = express();
 
@@ -10,7 +11,8 @@ function mediator(req: express.Request, res: express.Response, next: express.Nex
     next()
 }
 
-app.use(mediator)
+app.use(cors())
+    .use(mediator)
     .use(express.json())
     .use('/', orderRouter)
     .use('/', itemRouter);
