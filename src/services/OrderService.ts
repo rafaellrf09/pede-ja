@@ -13,6 +13,10 @@ export interface InterfaceOrderService {
 
 export default class OrderService {
 
+    private _calculateTotal(items: Item[]): number {
+        return items.reduce(function (a: any, b: any) { return a + (b.quantity * b.value); }, 0);
+    }
+
     private _validateChangeStatus(order: Order, newStatus: string): boolean {
         if (order.status === Status.DELIVERED && (newStatus === "CANCELED")) return false;
         else if ((order.status === Status.RECIEVED) && (newStatus === "RECIEVED")) return false;
@@ -24,7 +28,7 @@ export default class OrderService {
     }
 
     public async create(items: Item[], clientData: ClientData, paymentMethod: PaymentMethod): Promise<Order> {
-        const total = items.reduce(function (a: any, b: any) { return a + (b.quantity * b.value); }, 0);
+        const total = this._calculateTotal(items);
         return await OrderModel.create({
             items, clientData, paymentMethod, status: Status.RECIEVED, total
         });
