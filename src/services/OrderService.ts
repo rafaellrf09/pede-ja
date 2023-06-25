@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import { Order, OrderModel, Status } from "../models/Order";
+import { Order, OrderModel } from "../models/Order";
+import { OrderStatus } from "src/enums/orderStatus";
 import { Item } from "src/models/Item";
 import { ClientData } from "src/models/ClientData";
 import { PaymentMethod } from "src/models/PaymentMethod";
@@ -18,19 +19,19 @@ export default class OrderService {
     }
 
     private _validateChangeStatus(order: Order, newStatus: string): boolean {
-        if (order.status === Status.DELIVERED && (newStatus === "CANCELED")) return false;
-        else if ((order.status === Status.RECIEVED) && (newStatus === "RECIEVED")) return false;
-        else if ((order.status === Status.CREATED) && (newStatus === "RECIEVED" || newStatus === "CREATED")) return false;
-        else if ((order.status === Status.IN_PRODUCTION) && (newStatus === "RECIEVED" || newStatus === "CREATED" || newStatus === "IN_PRODUCTION")) return false;
-        else if ((order.status === Status.START_TO_DELIVERY) && (newStatus === "RECIEVED" || newStatus === "CREATED" || newStatus === "IN_PRODUCTION" || newStatus === "START_TO_DELIVERY")) return false;
-        order.status = Status[newStatus];
+        if (order.status === OrderStatus.DELIVERED && (newStatus === "CANCELED")) return false;
+        else if ((order.status === OrderStatus.RECIEVED) && (newStatus === "RECIEVED")) return false;
+        else if ((order.status === OrderStatus.CREATED) && (newStatus === "RECIEVED" || newStatus === "CREATED")) return false;
+        else if ((order.status === OrderStatus.IN_PRODUCTION) && (newStatus === "RECIEVED" || newStatus === "CREATED" || newStatus === "IN_PRODUCTION")) return false;
+        else if ((order.status === OrderStatus.START_TO_DELIVERY) && (newStatus === "RECIEVED" || newStatus === "CREATED" || newStatus === "IN_PRODUCTION" || newStatus === "START_TO_DELIVERY")) return false;
+        order.status = OrderStatus[newStatus];
         return true;
     }
 
     public async create(items: Item[], clientData: ClientData, paymentMethod: PaymentMethod): Promise<Order> {
         const total = this._calculateTotal(items);
         return await OrderModel.create({
-            items, clientData, paymentMethod, status: Status.RECIEVED, total
+            items, clientData, paymentMethod, status: OrderStatus.RECIEVED, total
         });
     }
 

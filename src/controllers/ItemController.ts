@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import ItemService, { InterfaceItemService } from "../services/ItemService";
+import { InterfaceItemService } from "../services/ItemService";
 
 export default class ItemController {
 

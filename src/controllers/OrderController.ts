@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { Status } from "../models/Order";
 import { InterfaceOrderService } from "../services/OrderService";
 import { rabbitMQClient, whatsappMessager } from "../messages";
 export default class OrderController {

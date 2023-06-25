@@ -2,21 +2,13 @@ import { model, Document, Schema, Model } from 'mongoose';
 import { Item } from './Item';
 import { ClientData } from './ClientData';
 import { PaymentMethod } from './PaymentMethod';
-
-export enum Status {
-    RECIEVED = "RECIEVED",
-    CREATED = "CREATED",
-    IN_PRODUCTION = "IN_PRODUCTION",
-    START_TO_DELIVERY = "START_TO_DELIVERY",
-    DELIVERED = "DELIVERED",
-    CANCELED = 'CANCELED'
-}
+import { OrderStatus } from 'src/enums/orderStatus';
 
 export interface Order extends Document {
     items: Item[],
     clientData: ClientData;
     paymentMethod: PaymentMethod,
-    status: Status,
+    status: OrderStatus,
     total: number,
 }
 
