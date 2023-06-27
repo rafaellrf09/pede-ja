@@ -1,4 +1,4 @@
-# README - PEDE JÁ
+# PEDE JÁ
 
 Este é o **README** da minha aplicação **Node.js** com **TypeScript**. Aqui você encontrará informações sobre como iniciar a aplicação, o banco de dados utilizado e uma breve explicação das rotas disponíveis.
 
